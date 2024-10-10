@@ -4,6 +4,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
+import time
 
 # Lê a planilha Excel
 df = pd.read_excel('caminho_para_sua_planilha.xlsx') 
@@ -29,23 +30,39 @@ driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div/div/form/div[2]/inp
 # Preenche os campos do formulário com base nos dados da planilha
 for index, row in df.iterrows():
     # Preenche o campo fabricante
-    fabricante_select = Select(driver.find_element(By.XPATH, '/html/body/div[1]/section[2]/article/div[2]/div/form/div[2]/div/div[1]/div[1]/div/span/span[1]/span'))
-    fabricante_select.select_by_visible_text(row['fabricante'])
+    fabricante_dropdown = driver.find_element(By.XPATH, '/html/body/div[1]/section[2]/article/div[2]/div/form/div[2]/div/div[1]/div[1]/div/span/span[1]/span')
+    fabricante_dropdown.click()  # Clica para abrir o dropdown
+    time.sleep(1)  # Espera o dropdown abrir
+
+    # Seleciona o fabricante
+    fabricante_opcao = driver.find_element(By.XPATH, f'//li[text()="{row["fabricante"]}"]')
+    fabricante_opcao.click()
 
     # Preenche o campo família
-    familia_select = Select(driver.find_element(By.XPATH, '/html/body/div[1]/section[2]/article/div[2]/div/form/div[2]/div/div[1]/div[2]/div/span/span[1]/span'))
-    familia_select.select_by_visible_text(row['familia'])
+    familia_dropdown = driver.find_element(By.XPATH, '/html/body/div[1]/section[2]/article/div[2]/div/form/div[2]/div/div[1]/div[2]/div/span/span[1]/span')
+    familia_dropdown.click()
+    time.sleep(1)
 
+    # Seleciona a família
+    familia_opcao = driver.find_element(By.XPATH, f'//li[text()="{row["familia"]}"]')
+    familia_opcao.click()
+    
     # Preenche o campo nome
     nome_input = driver.find_element(By.XPATH, '/html/body/div[1]/section[2]/article/div[2]/div/form/div[2]/div/div[2]/div[1]/div/input')
     nome_input.send_keys(row['nome'])
 
     # Preenche o campo unidade de medida
-    unidade_select = Select(driver.find_element(By.XPATH, '/html/body/div[1]/section[2]/article/div[2]/div/form/div[2]/div/div[3]/div[1]/div/span/span[1]/span'))
-    unidade_select.select_by_visible_text(row['unidade_medida'])
+    unidade_dropdown = driver.find_element(By.XPATH, '/html/body/div[1]/section[2]/article/div[2]/div/form/div[2]/div/div[3]/div[1]/div/span/span[1]/span')
+    unidade_dropdown.click()
+    time.sleep(1)
 
-    # Opcional: Clica no botão para cadastrar o produto
-    driver.find_element(By.XPATH, '/html/body/div[1]/section[2]/article/div[2]/div/form/div[4]/button').click()
+    # Seleciona a unidade de medida
+    unidade_opcao = driver.find_element(By.XPATH, f'//li[text()="{row["unidade_medida"]}"]')
+    unidade_opcao.click()
+
+    # Preenche o campo descricao
+    nome_input = driver.find_element(By.XPATH, '/html/body/div[1]/section[2]/article/div[2]/div/form/div[2]/div/div[4]/div/div/input')
+    nome_input.send_keys(row['descricao'])
 
 input("Pressione Enter para fechar o navegador...")
 driver.quit()
